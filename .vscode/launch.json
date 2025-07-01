@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-Application<process-design-patterns>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.example.workflow.Application",
+            "projectName": "process-design-patterns",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

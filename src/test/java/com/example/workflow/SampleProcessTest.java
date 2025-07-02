@@ -14,8 +14,10 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.camunda.bpm.engine.test.ProcessEngineRule;
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.*;
@@ -29,6 +31,7 @@ import java.sql.Statement;
 import javax.sql.DataSource;
 
 import org.camunda.bpm.engine.TaskService;
+import org.camunda.bpm.engine.delegate.DelegateExecution;
 
 
 
@@ -43,6 +46,10 @@ public class SampleProcessTest {
 private ProcessEngine processEngine;
 
 
+   @MockBean
+    private TestDelegate testDelegate;
+    @MockBean DelegateExecution delegateExecution;
+
 @Autowired
 private DataSource dataSource;
 
@@ -53,9 +60,14 @@ public void setup(){
    
 
   @Test
-  public void ruleUsageExample() {
+  public void ruleUsageExample() throws Exception {
 
-    
+   // doNothing().when(testDelegate).execute(delegateExecution);
+//this is how you skip a delegate
+   doAnswer(invocation -> {
+    System.out.println(" ************************test11111");
+    return null;
+}).when(testDelegate).execute(any(DelegateExecution.class));
     RuntimeService runtimeService = processEngine.getRuntimeService();
     runtimeService.startProcessInstanceByKey("process-design-patterns-process");
 
@@ -67,13 +79,7 @@ public void setup(){
     assertEquals(0, runtimeService.createProcessInstanceQuery().count());
   }
 
-    @After
-    public void cleanUpDb() throws Exception {
-        try (Connection conn = dataSource.getConnection(); 
-             Statement stmt = conn.createStatement()) {
-            stmt.execute("DROP ALL OBJECTS");
-        }
-    }
+   
 }
 
 
